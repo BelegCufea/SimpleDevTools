@@ -72,39 +72,22 @@ local function CreateMenu()
         end
         info.notCheckable = true
         UIDropDownMenu_AddButton(info, 1)
-
-        AddTitle()
-        AddTitle("|cnADVENTURES_COMBAT_LOG_GREY:Click to run appropriate addon.|r")
     end, "MENU")
 end
 
 -- Initialize the menu
 CreateMenu()
 
--- Disable tooltip
-ldbObject.OnTooltipShow = nil
-
--- Show the dropdown on hover
-ldbObject.OnEnter = function(self)
-    ToggleDropDownMenu(nil, nil, menuFrame, "cursor", 0, 0)
+-- OnClick function for the LDB object (opens the menu on click)
+function ldbObject.OnClick(self, button)
+    if button == "LeftButton" or button == "RightButton" then
+        ToggleDropDownMenu(nil, nil, menuFrame, "cursor", 0, 0)
+    end
 end
 
--- Sticky hover close logic
-ldbObject.OnLeave = function(self)
-    C_Timer.After(0.2, function()
-        -- check both the broker icon and the menu
-        if not MouseIsOver(self) and not MouseIsOver(menuFrame) then
-            CloseDropDownMenus()
-        end
-    end)
+-- OnTooltipShow function for the LDB object
+function ldbObject.OnTooltipShow(tooltip)
+    tooltip:SetText("SimpleDevTools")
+    tooltip:AddLine("Left or right-click for options.")
+    tooltip:AddLine("This addon provides quick access to common developer tools.")
 end
-
--- Also hook the menu itself, so leaving it closes things
-menuFrame:SetScript("OnLeave", function(self)
-    C_Timer.After(0.2, function()
-        -- check both again, in case mouse went back to icon
-        if not MouseIsOver(self) and not MouseIsOver(LibStub("LibDataBroker-1.1").objects[addonName]) then
-            CloseDropDownMenus()
-        end
-    end)
-end)
