@@ -27,6 +27,9 @@
         "MouseIsOver",
         "Add",
         "StaticPopupDialogs",
-        "StaticPopup_Show"
+        "StaticPopup_Show",
+        "Settings",
+        "UIDropDownMenu_SetWidth",
+        "UIDropDownMenu_SetSelectedName"
     ]
 }

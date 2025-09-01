@@ -1,5 +1,26 @@
+-- Create a global addon table that will be shared between files.
+SimpleDevTools = {}
+
+-- Define the addon name as a property of the global table.
+SimpleDevTools.addonName = "SimpleDevTools"
+
 local L = LibStub("LibDataBroker-1.1")
-local addonName = "SimpleDevTools"
+local addonName = SimpleDevTools.addonName
+
+-- Saved variables
+SimpleDevToolsDB = SimpleDevToolsDB or {
+    builtIn = {
+        { label = "FStack", command = "/fstack" },
+        { label = "ETrace", command = "/etrace" },
+    },
+    addons = {
+        { label = "WoW Lua", command = "/lua" },
+        { label = "DevTool", command = "/dev" },
+        { label = "Cube Code", command = "/cube code" },
+        { label = "API Interface", command = "/apii" },
+        { label = "Addon Profiler", command = "/nap" },
+    }
+}
 
 -- Create the LDB data object
 local ldbObject = L:NewDataObject(addonName, {
@@ -55,7 +76,6 @@ local function AddTitle(title)
     UIDropDownMenu_AddButton(info, 1)
 end
 
--- A function to create and populate the dropdown menu
 local function CreateMenu()
     UIDropDownMenu_Initialize(menuFrame, function(self, level)
         if level ~= 1 then return end
@@ -63,25 +83,23 @@ local function CreateMenu()
         AddTitle("Simple Dev Tools")
 
         AddTitle("|cnDIM_GREEN_FONT_COLOR:»Built-in|r")
-        AddMenuItem("FStack", "/fstack")
-        AddMenuItem("ETrace", "/etrace")
+        for _, entry in ipairs(SimpleDevToolsDB.builtIn) do
+            AddMenuItem(entry.label, entry.command)
+        end
 
         AddTitle()
         AddTitle("|cnDIM_GREEN_FONT_COLOR:»Addons|r")
-        AddMenuItem("WoW Lua", "/lua")
-        AddMenuItem("DevTool", "/dev")
-        AddMenuItem("Cube Code", "/cube code")
-        AddMenuItem("API Interface", "/apii")
-        AddMenuItem("Addon Profiler", "/nap")
+        for _, entry in ipairs(SimpleDevToolsDB.addons) do
+            AddMenuItem(entry.label, entry.command)
+        end
 
         AddTitle()
 
-        -- Reload Game
         local info = UIDropDownMenu_CreateInfo()
         info.text = "|cnACCOUNT_WIDE_FONT_COLOR:Reload|r"
         info.func = function()
             local dialog = StaticPopupDialogs[confirmationDialogName]
-            dialog.OnAccept =  function ()
+            dialog.OnAccept = function()
                 ReloadUI()
             end
             StaticPopup_Show(confirmationDialogName)
@@ -92,19 +110,19 @@ local function CreateMenu()
     end, "MENU")
 end
 
--- Initialize the menu
 CreateMenu()
 
--- OnClick function for the LDB object (opens the menu on click)
 function ldbObject.OnClick(self, button)
-    if button == "LeftButton" or button == "RightButton" then
+    if button == "LeftButton" then
         ToggleDropDownMenu(nil, nil, menuFrame, "cursor", 0, 0)
+    elseif button == "RightButton" then
+        Settings.OpenToCategory(SimpleDevTools.optionsPanel.name)
     end
 end
 
--- OnTooltipShow function for the LDB object
 function ldbObject.OnTooltipShow(tooltip)
     tooltip:SetText("SimpleDevTools")
-    tooltip:AddLine("Left or right-click for options.")
+    tooltip:AddLine("Left-click for options.")
+    tooltip:AddLine("Right-click to open configuration.")
     tooltip:AddLine("This addon provides quick access to common developer tools.")
 end
