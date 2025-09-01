@@ -25,6 +25,8 @@
         "ChatEdit_SendText",
         "DEFAULT_CHAT_FRAME",
         "MouseIsOver",
-        "Add"
+        "Add",
+        "StaticPopupDialogs",
+        "StaticPopup_Show"
     ]
 }

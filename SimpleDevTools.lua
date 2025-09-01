@@ -12,6 +12,15 @@ local ldbObject = L:NewDataObject(addonName, {
 -- Create a menu frame to hold our dropdown menu
 local menuFrame = CreateFrame("Frame", "SimpleDevToolsMenu", UIParent, "UIDropDownMenuTemplate")
 
+local confirmationDialogName = addonName .. "_confirmation"
+StaticPopupDialogs[confirmationDialogName] = {
+    text = "Do you want to proceed?",
+    button1 = "Yes",
+    button2 = "No",
+    hideOnEscape = true,
+    whileDead = true,
+}
+
 --- A function to execute a slash command by simulating chat input.
 --- This method bypasses security restrictions on protected functions.
 ---@param command string The slash command to run (e.g., "/lua").
@@ -25,7 +34,7 @@ end
 ---@param command string The slash command to be executed when the item is clicked.
 local function AddMenuItem(label, command)
     local info = UIDropDownMenu_CreateInfo()
-    info.text = label
+    info.text = "  " .. label
     info.func = function()
         RunCommand(command)
         CloseDropDownMenus()
@@ -46,7 +55,6 @@ local function AddTitle(title)
     UIDropDownMenu_AddButton(info, 1)
 end
 
-
 -- A function to create and populate the dropdown menu
 local function CreateMenu()
     UIDropDownMenu_Initialize(menuFrame, function(self, level)
@@ -54,20 +62,29 @@ local function CreateMenu()
 
         AddTitle("Simple Dev Tools")
 
-        AddMenuItem("WoWLUA", "/lua")
-        AddMenuItem("Dev", "/dev")
-        AddMenuItem("Code", "/cube code")
-        AddMenuItem("API", "/apii")
-        AddMenuItem("Profiler", "/nap")
+        AddTitle("|cnDIM_GREEN_FONT_COLOR:»Built-in|r")
+        AddMenuItem("FStack", "/fstack")
+        AddMenuItem("ETrace", "/etrace")
+
+        AddTitle()
+        AddTitle("|cnDIM_GREEN_FONT_COLOR:»Addons|r")
+        AddMenuItem("WoW Lua", "/lua")
+        AddMenuItem("DevTool", "/dev")
+        AddMenuItem("Cube Code", "/cube code")
+        AddMenuItem("API Interface", "/apii")
+        AddMenuItem("Addon Profiler", "/nap")
 
         AddTitle()
 
         -- Reload Game
         local info = UIDropDownMenu_CreateInfo()
-        info = UIDropDownMenu_CreateInfo()
         info.text = "|cnACCOUNT_WIDE_FONT_COLOR:Reload|r"
         info.func = function()
-            ReloadUI()
+            local dialog = StaticPopupDialogs[confirmationDialogName]
+            dialog.OnAccept =  function ()
+                ReloadUI()
+            end
+            StaticPopup_Show(confirmationDialogName)
             CloseDropDownMenus()
         end
         info.notCheckable = true
