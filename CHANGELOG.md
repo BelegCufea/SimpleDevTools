@@ -1,3 +1,8 @@
+### v0.1.2 - 2025-09-20
+
+### Changed
+- **Menu System** – Refactored the core menu creation from `UIDropDownMenu` to Blizzard's modern **`MenuUtil`** library. This improves performance and simplifies the code.
+
 ## v0.1.1 - 2025-09-01
 
 ### Added

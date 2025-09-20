@@ -2,7 +2,7 @@
 ## Title: SimpleDevTools
 ## Notes: A simple LDB addon for developer tools.
 ## Author: Cufea
-## Version: 0.1.1
+## Version: 0.1.2
 ## OptionalDeps: WoWLua, Dev, Cube, APIInterface, AddonProfiler
 
 ## SavedVariables: SimpleDevToolsDB
